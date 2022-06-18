@@ -1,5 +1,5 @@
 import http from 'http';
-import { BASE_URL } from '../constants/constants';
+import { BASE_URL, HEADER, STATUS_CODES } from '../constants/constants';
 import { userController } from '../controllers/user.controller';
 
 const app = (req: http.IncomingMessage, res: http.ServerResponse): void => {
@@ -12,6 +12,9 @@ const app = (req: http.IncomingMessage, res: http.ServerResponse): void => {
   } else if (hasId && method === 'GET') {
     const id = url?.split('/')[3] || '';
     userController.getUserById(res, id);
+  } else {
+    res.writeHead(STATUS_CODES.NOT_FOUND, HEADER);
+    res.end(JSON.stringify({ message: 'Route not found' }));
   }
 };
 
