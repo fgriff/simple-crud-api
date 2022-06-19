@@ -114,6 +114,37 @@ class UserController {
       console.log(e);
     }
   }
+
+  async removeUser(res: http.ServerResponse, id: string): Promise<void> {
+    try {
+      if (!isUuidValid(id)) {
+        res.writeHead(STATUS_CODES.BAD_REQUEST, HEADER);
+        res.end(
+          JSON.stringify({
+            message: SERVER_ANSWERS[STATUS_CODES.BAD_REQUEST],
+          })
+        );
+      } else {
+        const user = await userModel.findUserById(id);
+
+        if (!user) {
+          res.writeHead(STATUS_CODES.NOT_FOUND, HEADER);
+          res.end(
+            JSON.stringify({
+              message: SERVER_ANSWERS[STATUS_CODES.NOT_FOUND],
+            })
+          );
+        } else {
+          await userModel.removeUser(id);
+
+          res.writeHead(STATUS_CODES.NO_CONTENT, HEADER);
+          res.end();
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
 
 export const userController = new UserController();

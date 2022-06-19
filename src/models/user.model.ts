@@ -37,6 +37,13 @@ class UserModel {
       resolve(updatedUser);
     });
   }
+
+  removeUser(id: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.users = this.users.filter((u) => u.id !== id);
+      resolve();
+    });
+  }
 }
 
 export const userModel = new UserModel();

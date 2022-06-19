@@ -17,6 +17,9 @@ const app = (req: http.IncomingMessage, res: http.ServerResponse): void => {
   } else if (hasId && method === 'PUT') {
     const id = url?.split('/')[3] || '';
     userController.updateUser(req, res, id);
+  } else if (hasId && method === 'DELETE') {
+    const id = url?.split('/')[3] || '';
+    userController.removeUser(res, id);
   } else {
     res.writeHead(STATUS_CODES.NOT_FOUND, HEADER);
     res.end(JSON.stringify({ message: 'Route not found' }));
