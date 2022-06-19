@@ -24,6 +24,19 @@ class UserModel {
       resolve(newUser);
     });
   }
+
+  updateUser(id: string, data: IUser): Promise<IUser> {
+    return new Promise((resolve) => {
+      const idx = this.users.findIndex((u) => u.id === id);
+      const updatedUser = {...this.users[idx], ...data};
+      this.users = [
+        ...this.users.slice(0, idx),
+        updatedUser,
+        ...this.users.slice(idx + 1),
+      ];
+      resolve(updatedUser);
+    });
+  }
 }
 
 export const userModel = new UserModel();

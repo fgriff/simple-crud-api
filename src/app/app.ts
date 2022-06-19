@@ -14,6 +14,9 @@ const app = (req: http.IncomingMessage, res: http.ServerResponse): void => {
     userController.getUserById(res, id);
   } else if (url === BASE_URL && method === 'POST') {
     userController.createUser(req, res);
+  } else if (hasId && method === 'PUT') {
+    const id = url?.split('/')[3] || '';
+    userController.updateUser(req, res, id);
   } else {
     res.writeHead(STATUS_CODES.NOT_FOUND, HEADER);
     res.end(JSON.stringify({ message: 'Route not found' }));
