@@ -25,7 +25,9 @@ const isBodyValid = (body: string): boolean => {
     const transformedBody = JSON.parse(body) as IUser;
 
     requiredFields.forEach((f) => {
-      if (!(f in transformedBody)) {
+      const isNotNull = transformedBody[f] === null || transformedBody[f] === undefined;
+
+      if (!(f in transformedBody) || isNotNull) {
         result = false;
       }
     });
