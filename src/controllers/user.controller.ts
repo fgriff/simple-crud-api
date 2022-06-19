@@ -1,6 +1,8 @@
 import http from 'http';
 import { HEADER, SERVER_ANSWERS, STATUS_CODES } from '../constants/constants';
+import { getBodyData, isBodyValid } from '../helpers/getBodyData.helper';
 import { isUuidValid } from '../helpers/uuid.helper';
+import { IUser } from '../interfaces/interfaces';
 import { userModel } from '../models/user.model';
 
 class UserController {
@@ -33,6 +35,35 @@ class UserController {
       }
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  async createUser(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
+    try {
+      const body = await getBodyData(req, res);
+
+      if (isBodyValid(body)) {
+        const { username, age, hobbies } = JSON.parse(body) as IUser;
+
+        const data = {
+          username,
+          age,
+          hobbies,
+        };
+
+        const newUser = await userModel.createUser(data);
+
+        res.writeHead(STATUS_CODES.CREATED, HEADER);
+        res.end(JSON.stringify(newUser));
+      } else {
+        res.writeHead(STATUS_CODES.BAD_REQUEST, HEADER);
+        res.end(JSON.stringify({ message: 'Fill in all required fields' }));
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        res.writeHead(STATUS_CODES.INTERNAL_SERVER_ERROR, HEADER);
+        res.end(JSON.stringify({ message: `${e.message}` }));
+      }
     }
   }
 }
